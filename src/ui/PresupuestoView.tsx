@@ -11,6 +11,9 @@ interface Props {
   setEstado: SetEstado;
 }
 
+/** Dentro de un iframe (p. ej. una demo embebida) el diálogo de impresión suele estar bloqueado. */
+const EMBEBIDO = window.self !== window.top;
+
 const COEFICIENTES: [keyof Coeficientes, string][] = [
   ["gastosGenerales", "Gastos generales %"],
   ["gastosFinancieros", "Gastos financieros %"],
@@ -20,6 +23,7 @@ const COEFICIENTES: [keyof Coeficientes, string][] = [
 
 export function PresupuestoView({ presupuesto: p, estado, setEstado }: Props) {
   const [apuNuevo, setApuNuevo] = useState("");
+  const [vistaCliente, setVistaCliente] = useState(false);
   const { catalogo } = estado;
 
   const actualizar = (cambios: Partial<Presupuesto>) =>
@@ -212,7 +216,10 @@ export function PresupuestoView({ presupuesto: p, estado, setEstado }: Props) {
           </p>
           <div className="acciones">
             <button onClick={guardarVersion}>Guardar versión {p.version}</button>
-            <button onClick={() => window.print()}>Imprimir / PDF para el cliente</button>
+            <button onClick={() => setVistaCliente(!vistaCliente)}>
+              {vistaCliente ? "Ocultar vista del cliente" : "Ver como el cliente"}
+            </button>
+            {!EMBEBIDO && <button onClick={() => window.print()}>Imprimir / PDF para el cliente</button>}
           </div>
           {versiones.length > 0 && (
             <details>
@@ -230,7 +237,7 @@ export function PresupuestoView({ presupuesto: p, estado, setEstado }: Props) {
         </section>
       </div>
 
-      <Impresion presupuesto={p} resumen={r} />
+      <Impresion presupuesto={p} resumen={r} enPantalla={vistaCliente} />
     </>
   );
 }

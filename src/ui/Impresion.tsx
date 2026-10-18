@@ -1,10 +1,19 @@
 import { formatoNumero, formatoPesos, type ResumenPresupuesto } from "../domain/calculo";
 import type { Presupuesto } from "../domain/types";
 
-/** Vista para el cliente. Solo se muestra al imprimir (Imprimir → Guardar como PDF). */
-export function Impresion({ presupuesto: p, resumen: r }: { presupuesto: Presupuesto; resumen: ResumenPresupuesto }) {
+/** Vista para el cliente: se imprime (Imprimir → Guardar como PDF) y se puede previsualizar en pantalla. */
+export function Impresion({
+  presupuesto: p,
+  resumen: r,
+  enPantalla = false,
+}: {
+  presupuesto: Presupuesto;
+  resumen: ResumenPresupuesto;
+  /** Muestra la vista del cliente también en pantalla, además de al imprimir. */
+  enPantalla?: boolean;
+}) {
   return (
-    <article className="solo-print impresion">
+    <article className={`solo-print impresion ${enPantalla ? "en-pantalla" : ""}`}>
       <header>
         <h1>Presupuesto</h1>
         <p className="obra">{p.nombre}</p>

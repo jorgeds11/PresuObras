@@ -18,6 +18,7 @@ const PESTANAS: [Pestana, string][] = [
 export function App() {
   const [estado, setEstado, reiniciar] = useEstado();
   const [pestana, setPestana] = useState<Pestana>("presupuesto");
+  const [confirmarReinicio, setConfirmarReinicio] = useState(false);
   const [actualId, setActualId] = useState(estado.presupuestos[0]?.id);
   const actual = estado.presupuestos.find((p) => p.id === actualId) ?? estado.presupuestos[0];
 
@@ -48,12 +49,26 @@ export function App() {
             </button>
           ))}
         </nav>
-        <button
-          className="secundario"
-          onClick={() => confirm("¿Borrar todos los datos locales y volver al catálogo de ejemplo?") && reiniciar()}
-        >
-          Restablecer datos
-        </button>
+        {confirmarReinicio ? (
+          <span className="confirmar">
+            ¿Borrar tus datos y volver al ejemplo?
+            <button
+              onClick={() => {
+                reiniciar();
+                setConfirmarReinicio(false);
+              }}
+            >
+              Sí, borrar
+            </button>
+            <button className="secundario" onClick={() => setConfirmarReinicio(false)}>
+              Cancelar
+            </button>
+          </span>
+        ) : (
+          <button className="secundario" onClick={() => setConfirmarReinicio(true)}>
+            Restablecer datos
+          </button>
+        )}
       </header>
 
       <main>

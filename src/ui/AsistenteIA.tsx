@@ -34,12 +34,21 @@ export function AsistenteIA({ catalogo, onAceptar }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(cuerpo),
       });
-      const datos = await res.json();
+      const datos = await res.json().catch(() => null);
+      if (!datos) {
+        throw new Error("El asistente IA necesita el servidor de la app (npm run dev); no está disponible en esta demo.");
+      }
       if (!res.ok) throw new Error(datos.error ?? "Error al generar la propuesta");
       setPropuesta(datos);
       setElegidos(datos.items.map(() => true));
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(
+        err instanceof TypeError
+          ? "No se pudo conectar con el servidor del asistente IA. En esta demo no está disponible."
+          : err instanceof Error
+            ? err.message
+            : String(err),
+      );
     } finally {
       setCargando(false);
     }

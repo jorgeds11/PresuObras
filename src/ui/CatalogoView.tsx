@@ -82,6 +82,7 @@ interface FilaProps {
 function FilaAPU({ apu, estado, abierto, onAbrir, onCambiar }: FilaProps) {
   const { catalogo } = estado;
   const [nuevoRef, setNuevoRef] = useState("");
+  const [faltaFuente, setFaltaFuente] = useState(false);
   let costo: ReturnType<typeof costoAPU> | null = null;
   let error = "";
   try {
@@ -254,15 +255,19 @@ function FilaAPU({ apu, estado, abierto, onAbrir, onCambiar }: FilaProps) {
                 checked={apu.validado}
                 onChange={(e) => {
                   if (e.target.checked && !apu.fuente.trim()) {
-                    alert("Indicá quién o qué fuente validó los rendimientos antes de marcarlo como validado.");
+                    setFaltaFuente(true);
                     return;
                   }
+                  setFaltaFuente(false);
                   onCambiar({ validado: e.target.checked });
                 }}
               />
               Validado por un profesional
             </label>
           </div>
+          {faltaFuente && (
+            <p className="error">Indicá quién o qué fuente validó los rendimientos antes de marcarlo como validado.</p>
+          )}
           {apu.notas && <p className="tenue">Notas: {apu.notas}</p>}
         </div>
       )}

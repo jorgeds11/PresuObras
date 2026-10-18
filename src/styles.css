@@ -16,7 +16,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --fondo: #17191c;
     --tarjeta: #212428;
     --texto: #e7e7e4;
@@ -26,16 +26,36 @@
     --aviso-fondo: #3a2d16;
     --aviso-borde: #8a6420;
     --error: #ff7a6b;
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+    --fondo: #17191c;
+  --tarjeta: #212428;
+  --texto: #e7e7e4;
+  --tenue: #9aa0a6;
+  --borde: #3a3e44;
+  --acento: #e07a3c;
+  --aviso-fondo: #3a2d16;
+  --aviso-borde: #8a6420;
+  --error: #ff7a6b;
+  color-scheme: dark;
+}
+
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--fondo); }
-main { max-width: 1200px; margin: 0 auto; padding: 16px; }
+body { margin: 0; background: var(--fondo); color: var(--texto); }
+main {
+  max-width: 1200px; margin: 0 auto; padding-block: 16px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
 
 .barra {
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-  padding: 10px 16px; background: var(--tarjeta); border-bottom: 1px solid var(--borde);
+  padding-block: 10px; background: var(--tarjeta); border-bottom: 1px solid var(--borde);
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 .barra h1 { font-size: 18px; margin: 0; color: var(--acento); }
 .barra nav { display: flex; gap: 4px; flex: 1; flex-wrap: wrap; }
@@ -55,6 +75,9 @@ input, select, textarea {
   background: var(--tarjeta); color: var(--texto);
 }
 textarea { width: 100%; resize: vertical; }
+:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
+.confirmar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+td, th { font-variant-numeric: tabular-nums; }
 input.cantidad { width: 90px; text-align: right; }
 input.cantidad.corta { width: 60px; }
 
@@ -71,6 +94,7 @@ input.cantidad.corta { width: 60px; }
 .grilla-datos label { display: flex; flex-direction: column; gap: 4px; color: var(--tenue); font-size: 12px; }
 .grilla-datos label input { color: var(--texto); font-size: 14px; }
 .grilla-datos .ancho { grid-column: span 2; }
+@media (max-width: 480px) { .grilla-datos .ancho { grid-column: auto; } }
 .grilla-datos label.check { flex-direction: row; align-items: center; font-size: 14px; color: var(--texto); }
 .validacion { margin-top: 12px; }
 
@@ -111,24 +135,31 @@ tr.alerta td { background: var(--aviso-fondo); }
 
 .solo-print { display: none; }
 
+.impresion.en-pantalla {
+  display: block; background: var(--tarjeta); border: 1px solid var(--borde);
+  border-radius: 10px; padding: 24px; overflow-x: auto;
+}
+.impresion { font-size: 11pt; }
+.impresion header { border-bottom: 2px solid var(--acento); margin-bottom: 16px; padding-bottom: 8px; }
+.impresion h1 { color: var(--acento); margin: 0; font-size: 22pt; }
+.impresion .obra { font-size: 14pt; margin: 4px 0 8px; }
+.impresion .datos { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; }
+.impresion .datos dd { margin: 0; }
+.impresion .totales {
+  display: grid; grid-template-columns: 1fr auto; gap: 4px 24px;
+  width: min(100%, 360px); margin: 16px 0 0 auto;
+}
+.impresion .totales dd { margin: 0; text-align: right; }
+.impresion .total { font-weight: 700; font-size: 14pt; }
+.impresion footer { margin-top: 32px; font-size: 9pt; color: var(--tenue); }
+
 @media print {
-  :root { --texto: #000; --tenue: #555; --borde: #ccc; --acento: #8a3c10; }
+  :root { --texto: #000; --tenue: #555; --borde: #ccc; --acento: #8a3c10; --tarjeta: #fff; color-scheme: light; }
   body { background: #fff; }
   .no-print { display: none !important; }
   main { padding: 0; max-width: none; }
   .solo-print { display: block; }
-  .impresion { font-size: 11pt; }
-  .impresion header { border-bottom: 2px solid var(--acento); margin-bottom: 16px; padding-bottom: 8px; }
-  .impresion h1 { color: var(--acento); margin: 0; font-size: 22pt; }
-  .impresion .obra { font-size: 14pt; margin: 4px 0 8px; }
-  .impresion .datos { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; }
-  .impresion .datos dd { margin: 0; }
+  .impresion.en-pantalla { border: none; padding: 0; }
   .impresion tr { break-inside: avoid; }
-  .impresion .totales {
-    display: grid; grid-template-columns: 1fr auto; gap: 4px 24px;
-    width: 50%; margin: 16px 0 0 auto;
-  }
-  .impresion .totales dd { margin: 0; text-align: right; }
-  .impresion .total { font-weight: 700; font-size: 14pt; }
-  .impresion footer { margin-top: 32px; font-size: 9pt; color: var(--tenue); }
 }
+.tarjeta > table td:first-child { white-space: nowrap; }
