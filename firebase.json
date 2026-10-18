@@ -1,0 +1,15 @@
+{
+  "hosting": {
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**", "demo.html"],
+    "predeploy": ["npm run build"],
+    "rewrites": [
+      { "source": "/api/generar", "function": { "functionId": "generar", "region": "us-central1" } },
+      { "source": "**", "destination": "/index.html" }
+    ]
+  },
+  "functions": {
+    "source": "functions",
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+  }
+}

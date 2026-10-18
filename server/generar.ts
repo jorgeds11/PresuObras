@@ -4,7 +4,8 @@ import { PropuestaIASchema, type PropuestaIA, type SolicitudGenerar } from "../s
 
 export class SolicitudInvalida extends Error {}
 
-const client = new Anthropic();
+// Se crea al primer uso: en Cloud Functions la clave llega como secreto en tiempo de ejecución.
+let client: Anthropic | undefined;
 
 const SYSTEM = `Sos un asistente de cómputo y presupuesto de obras para arquitectos y constructores en Argentina.
 
@@ -36,6 +37,7 @@ export async function generarPropuesta(cuerpo: unknown): Promise<PropuestaIA> {
     .map((a) => `${a.codigo} | ${a.rubro} | ${a.descripcion} | ${a.unidad}`)
     .join("\n");
 
+  client ??= new Anthropic();
   const respuesta = await client.beta.messages.parse({
     model: "claude-opus-5-5",
     max_tokens: 16000,

@@ -43,6 +43,20 @@ npm test                  # tests del motor de cálculo, CSV e índices
 npm run build             # typecheck + build de producción
 ```
 
+## Publicar en Firebase
+
+La app (Hosting) y el asistente IA (Cloud Function `generar`) se publican juntos. Requiere un proyecto de Firebase con plan Blaze, porque las Cloud Functions lo necesitan.
+
+```bash
+npm install && npm --prefix functions install
+npx firebase-tools login
+npx firebase-tools use --add                                   # elegir el proyecto
+npx firebase-tools functions:secrets:set ANTHROPIC_API_KEY     # pegar la clave
+npx firebase-tools deploy
+```
+
+Para una demo sin servidor (sin el asistente IA), `npm run build:demo` genera `dist/demo.html`, un único archivo con toda la app.
+
 ## Estructura
 
 ```
@@ -51,6 +65,7 @@ src/data/       Catálogo de demostración
 src/store/      Estado y persistencia local
 src/ui/         Interfaz React
 server/         Endpoint POST /api/generar que llama a Claude con salida estructurada
+functions/      El mismo endpoint como Cloud Function para Firebase
 ```
 
 ## Próximos pasos sugeridos
